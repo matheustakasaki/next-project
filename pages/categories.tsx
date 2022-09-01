@@ -1,27 +1,28 @@
 import React from "react";
-import { GetStaticProps } from "next/types";
-import apiInterna from '../service/apiInterna.json'
+import api from '../service/api'
 import { Container } from "../styles/Dashboard/styles";
+import { GetServerSideProps } from 'next'
 
-interface ICategories {
+
+interface IProducts {
     id: number;
     title: string
 }
 
-interface CategoryProps {
-    categories: ICategories[]
+interface ProductsProps {
+    products: IProducts[]
 }
 
-export default function categories({ categories }: CategoryProps) {
+export default function Home({ products }: ProductsProps) {
     return (
         <Container>
-            <h1>Categorias</h1>
+            <h1>Products</h1>
             <section>
                 <ul>
-                    {categories.map(category => {
+                    {products.map(product => {
                         return (
-                            <li key={category.id}>
-                                {category.title}
+                            <li key={product.id}>
+                                {product.title}
                             </li>
                         )
                     })}
@@ -31,15 +32,13 @@ export default function categories({ categories }: CategoryProps) {
     )
 };
 
-export const getStaticProps: GetStaticProps<CategoryProps> = async () => {
-    const response = await apiInterna.get(`http://localhost:3333/categories`);
+export const getServerSideProps: GetServerSideProps<ProductsProps> = async () => {
+    const response = await api.get(`http://localhost:3333/products`);
 
-    const categories = await response.data;
-
+    const products = await response.data;
     return {
         props: {
-            categories
-        },
-        revalidate: 5
+            products
+        }
     }
-}
+} 
